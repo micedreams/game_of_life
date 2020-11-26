@@ -9,12 +9,28 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int rows = 15;
+  int rows = 10;
   int total;
   var rng = new Random();
   var numOfLiveCells;
   var arr = new List(1000);
   int count;
+
+  @override
+  initState() {
+    total = rows * rows;
+    numOfLiveCells = total / 4;
+    for (var i = 0; i < total; i++) {
+      arr[i] = "";
+    }
+    for (var i = 0; i < numOfLiveCells; i++) {
+      var rando = rng.nextInt(total);
+      if (arr[rando] == "") {
+        arr[rando] = "X";
+      }
+    }
+    super.initState();
+  }
 
   liveCells(value, i) {
     if (value >= 0 && value < total && arr[value] == "X") {
@@ -49,7 +65,6 @@ class _HomeState extends State<Home> {
 
   setValues() {
     setState(() {});
-
     for (var i = 0; i < total; i++) {
       count = calculateLive(i);
       if (count == 3) {
@@ -59,22 +74,6 @@ class _HomeState extends State<Home> {
         arr[i] = "";
       }
     }
-  }
-
-  @override
-  initState() {
-    total = rows * rows;
-    numOfLiveCells = total / 4;
-    for (var i = 0; i < total; i++) {
-      arr[i] = "";
-    }
-    for (var i = 0; i < numOfLiveCells; i++) {
-      var rando = rng.nextInt(total);
-      if (arr[rando] == "") {
-        arr[rando] = "X";
-      }
-    }
-    super.initState();
   }
 
   @override
