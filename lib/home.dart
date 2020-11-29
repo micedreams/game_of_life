@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'game_of_life.dart';
 
 class Home extends StatefulWidget {
   static const routeName = '/Home';
@@ -9,17 +10,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int rows = 10;
+  GameOfLife world = new GameOfLife();
+  var arr = new List(100);
+  int rows;
   int total;
   var rng = new Random();
-  var numOfLiveCells;
-  var arr = new List(1000);
+  int numOfLiveCells;
   int count;
 
   @override
   initState() {
-    total = rows * rows;
-    numOfLiveCells = total / 4;
+    rows = sqrt(arr.length).toInt();
+    total = arr.length;
+    numOfLiveCells = rng.nextInt(total);
     for (var i = 0; i < total; i++) {
       arr[i] = "";
     }
@@ -32,48 +35,9 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  liveCells(value, i) {
-    if (value >= 0 && value < total && arr[value] == "X") {
-      if (value % rows == 0 && value == (i - (rows - 1)) ||
-          value % rows == 0 && value == (i + (rows + 1)) ||
-          value % rows == 0 && value == (i + 1) ||
-          value % rows == (rows - 1) && value == (i - (rows + 1)) ||
-          value % rows == (rows - 1) && value == (i + (rows - 1)) ||
-          value % rows == (rows - 1) && value == (i - 1)) {
-        count = 0;
-      } else {
-        count = 1;
-      }
-    } else {
-      count = 0;
-    }
-    return count;
-  }
-
-  calculateLive(i) {
-    int count = 0;
-    count += liveCells(i + (1), i);
-    count += liveCells(i + (rows + 1), i);
-    count += liveCells(i + (rows - 1), i);
-    count += liveCells(i + (rows), i);
-    count += liveCells(i - (1), i);
-    count += liveCells(i - (rows + 1), i);
-    count += liveCells(i - (rows - 1), i);
-    count += liveCells(i - (rows), i);
-    return count;
-  }
-
   setValues() {
     setState(() {});
-    for (var i = 0; i < total; i++) {
-      count = calculateLive(i);
-      if (count == 3) {
-        arr[i] = "X";
-      }
-      if (count < 2 || count > 3) {
-        arr[i] = "";
-      }
-    }
+    world.setValues(arr);
   }
 
   @override
