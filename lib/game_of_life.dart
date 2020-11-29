@@ -1,6 +1,7 @@
 import 'dart:math';
 
 class GameOfLife {
+  var arr;
   var rng = new Random();
   int count;
 

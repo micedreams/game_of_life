@@ -42,37 +42,45 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(context) {
-    //setValues();
+    Stream<GameOfLife> _bids = (() async* {
+      await Future<void>.delayed(Duration(seconds: 1));
+      setValues();
+      await Future<void>.delayed(Duration(seconds: 1));
+    })();
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Game of life"),
-      ),
-      body: new Container(
+    return StreamBuilder<GameOfLife>(
+      stream: _bids,
+      builder: (context, snapshot) {
+        return new Scaffold(
+          appBar: new AppBar(
+            title: new Text("Game of life"),
+          ),
+          body: new Container(
           child: GridView.count(
-        crossAxisCount: rows,
-        children: List.generate(total, (index) {
-          return new GridTile(
-            child: new Card(
-                color: Colors.blue.shade200,
-                child: Center(
-                    child: RaisedButton(
+            crossAxisCount: rows,
+            children: List.generate(total, (index) {
+              return new GridTile(
+                child: new Card(
                   color: Colors.blue.shade200,
-                  onPressed: () {
-                    setValues();
-                    arr[index] = "X"; 
-                  },
-                  onLongPress: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed(Home.routeName);
-                  },
                   child: Center(
-                    child: Text(arr[index]),
-                  ),
-                ))),
-          );
-        }),
-      )),
-    );
+                    child: RaisedButton(
+                      color: Colors.blue.shade200,
+                      onPressed: () {
+                        setValues();
+                        arr[index] = "X";
+                      },
+                      onLongPress: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed(Home.routeName);
+                      },
+                      child: Text(arr[index]),
+                    )
+                  )
+                ),
+              );
+            }),
+          )),
+        );
+      });
   }
 }
