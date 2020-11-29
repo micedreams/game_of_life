@@ -60,6 +60,7 @@ class _HomeState extends State<Home> {
                   color: Colors.blue.shade200,
                   onPressed: () {
                     setValues();
+                    arr[index] = "X"; 
                   },
                   onLongPress: () {
                     Navigator.of(context).pop();
