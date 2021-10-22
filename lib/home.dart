@@ -11,21 +11,18 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   GameOfLife world = new GameOfLife();
-  var arr = new List(100);
-  int rows;
-  int total;
+  var arr = new List.filled(100, "", growable: false);
+  late int rows;
+  late int total;
   var rng = new Random();
-  int numOfLiveCells;
-  int count;
+  late int numOfLiveCells;
+  late int count;
 
   @override
   initState() {
     rows = sqrt(arr.length).toInt();
     total = arr.length;
     numOfLiveCells = rng.nextInt(total);
-    for (var i = 0; i < total; i++) {
-      arr[i] = "";
-    }
     for (var i = 0; i < numOfLiveCells; i++) {
       var rando = rng.nextInt(total);
       if (arr[rando] == "") {
@@ -47,13 +44,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(context) {
-    Stream<GameOfLife> _bids = (() async* {
+    Stream _bids = (() async* {
       await Future<void>.delayed(Duration(seconds: 1));
       setValues();
       await Future<void>.delayed(Duration(seconds: 1));
     })();
 
-    return StreamBuilder<GameOfLife>(
+    return StreamBuilder(
         stream: _bids,
         builder: (context, snapshot) {
           return new Scaffold(
@@ -65,20 +62,19 @@ class _HomeState extends State<Home> {
               crossAxisCount: rows,
               children: List.generate(total, (index) {
                 return new GridTile(
-                  child: new Card(
-                      color: Colors.blue.shade200,
-                      child: Center(
-                          child: RaisedButton(
+                  child: InkWell(
+                    onTap: () {
+                      setValues();
+                      arr[index] = "X";
+                    },
+                    onLongPress: () {
+                      reset();
+                    },
+                    child: new Card(
                         color: Colors.blue.shade200,
-                        onPressed: () {
-                          setValues();
-                          arr[index] = "X";
-                        },
-                        onLongPress: () {
-                          reset();
-                        },
-                        child: Text(arr[index]),
-                      ))),
+                        child: Center(
+                            child: Text(arr[index]))),
+                  ),
                 );
               }),
             )),

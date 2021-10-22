@@ -3,7 +3,7 @@ import 'dart:math';
 class GameOfLife {
   var arr;
   var rng = new Random();
-  int count;
+  late int count;
 
   _liveCells(value, i, arr) {
     int rows = sqrt(arr.length).toInt();
@@ -27,7 +27,7 @@ class GameOfLife {
 
   _calculateLive(i, arr) {
     int rows = sqrt(arr.length).toInt();
-    int count = 0;
+    num? count = 0;
     count += _liveCells(i + (1), i, arr);
     count += _liveCells(i + (rows + 1), i, arr);
     count += _liveCells(i + (rows - 1), i, arr);
