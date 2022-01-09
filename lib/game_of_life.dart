@@ -1,9 +1,48 @@
 import 'dart:math';
 
 class GameOfLife {
-  var arr;
+  var arr = new List.filled(100, "", growable: false);
+  int rows = 10;
+  int total = 100;
   var rng = new Random();
+  late int numOfLiveCells = rng.nextInt(total);
   late int count;
+
+  randomLife() {
+    for (var i = 0; i < numOfLiveCells; i++) {
+      var rando = rng.nextInt(total);
+      if (arr[rando] == "") {
+        arr[rando] = "X";
+      }
+    }
+    return arr;
+  }
+
+  setValues(arr) {
+    int total = arr.length;
+    for (var i = 0; i < total; i++) {
+      count = _calculateLive(i, arr);
+      if (count == 3) {
+        arr[i] = "X";
+      }
+      if (count < 2 || count > 3) {
+        arr[i] = "";
+      }
+    }
+    return arr;
+  }
+
+  onClick(index) {
+    setValues(arr);
+    arr[index] = "X";
+    return arr;
+  }
+
+  onReset() {
+    arr = List.filled(100, "", growable: false);
+    arr = randomLife();
+    return arr;
+  }
 
   _liveCells(value, i, arr) {
     int rows = sqrt(arr.length).toInt();
@@ -37,18 +76,5 @@ class GameOfLife {
     count += _liveCells(i - (rows - 1), i, arr);
     count += _liveCells(i - (rows), i, arr);
     return count;
-  }
-
-  setValues(arr) {
-    int total = arr.length;
-    for (var i = 0; i < total; i++) {
-      count = _calculateLive(i, arr);
-      if (count == 3) {
-        arr[i] = "X";
-      }
-      if (count < 2 || count > 3) {
-        arr[i] = "";
-      }
-    }
   }
 }
