@@ -18,7 +18,7 @@ class GameOfLifeFunctions {
     return arr;
   }
 
-  setValues(arr) {
+  setNewValues(arr) {
     int total = arr.length;
     for (var i = 0; i < total; i++) {
       count = _calculateLive(i, arr);
@@ -33,7 +33,6 @@ class GameOfLifeFunctions {
   }
 
   onClick(index) {
-    setValues(arr);
     arr[index] = "X";
     return arr;
   }
