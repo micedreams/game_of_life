@@ -1,80 +1,58 @@
-import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:game_of_life/game_of_life_functions.dart';
 
-class GameOfLife {
+class GameOfLife extends StatefulWidget {
+  static const routeName = '/Home';
+
+  @override
+  State<StatefulWidget> createState() => new _GameOfLifeState();
+}
+
+class _GameOfLifeState extends State<GameOfLife> {
+  GameOfLifeFunctions world = new GameOfLifeFunctions();
   var arr = new List.filled(100, "", growable: false);
-  int rows = 10;
-  int total = 100;
-  var rng = new Random();
-  late int numOfLiveCells = rng.nextInt(total);
-  late int count;
+  late Stream _bids;
 
-  randomLife() {
-    for (var i = 0; i < numOfLiveCells; i++) {
-      var rando = rng.nextInt(total);
-      if (arr[rando] == "") {
-        arr[rando] = "X";
-      }
-    }
-    return arr;
+  @override
+  initState() {
+    arr = world.randomLife();
+    super.initState();
   }
 
-  setValues(arr) {
-    int total = arr.length;
-    for (var i = 0; i < total; i++) {
-      count = _calculateLive(i, arr);
-      if (count == 3) {
-        arr[i] = "X";
-      }
-      if (count < 2 || count > 3) {
-        arr[i] = "";
-      }
-    }
-    return arr;
+  initial() async {
+    _bids = (() async* {
+      await Future<void>.delayed(Duration(seconds: 1));
+      setState(() {
+        arr = world.setValues(arr);
+      });
+      await Future<void>.delayed(Duration(seconds: 1));
+    })();
   }
 
-  onClick(index) {
-    setValues(arr);
-    arr[index] = "X";
-    return arr;
-  }
-
-  onReset() {
-    arr = List.filled(100, "", growable: false);
-    arr = randomLife();
-    return arr;
-  }
-
-  _liveCells(value, i, arr) {
-    int rows = sqrt(arr.length).toInt();
-    int total = arr.length;
-    if (value >= 0 && value < total && arr[value] == "X") {
-      if (value % rows == 0 && value == (i - (rows - 1)) ||
-          value % rows == 0 && value == (i + (rows + 1)) ||
-          value % rows == 0 && value == (i + 1) ||
-          value % rows == (rows - 1) && value == (i - (rows + 1)) ||
-          value % rows == (rows - 1) && value == (i + (rows - 1)) ||
-          value % rows == (rows - 1) && value == (i - 1)) {
-        count = 0;
-      } else {
-        count = 1;
-      }
-    } else {
-      count = 0;
-    }
-    return count;
-  }
-
-  _calculateLive(i, arr) {
-    int rows = sqrt(arr.length).toInt();
-    num? count = 0;
-    count += _liveCells(i + (1), i, arr);
-    count += _liveCells(i + (rows + 1), i, arr);
-    count += _liveCells(i + (rows - 1), i, arr);
-    count += _liveCells(i + (rows), i, arr);
-    count += _liveCells(i - (1), i, arr);
-    count += _liveCells(i - (rows + 1), i, arr);
-    count += _liveCells(i - (rows - 1), i, arr);
-    count += _liveCells(i - (rows), i, arr);
-    return count;
+  @override
+  Widget build(context) {
+    initial();
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text("Game of life"),
+        ),
+        body: StreamBuilder(
+            stream: _bids,
+            builder: (context, snapshot) {
+              return GridView.count(
+                crossAxisCount: 10,
+                children: List.generate(100, (index) {
+                  return InkWell(
+                    onTap: () => setState(() {
+                      arr = world.onClick(index);
+                    }),
+                    onLongPress: () => setState(() {
+                      arr = world.onReset();
+                    }),
+                    child: Card(child: Center(child: Text(arr[index]))),
+                  );
+                }),
+              );
+            }));
   }
 }
