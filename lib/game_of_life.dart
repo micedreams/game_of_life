@@ -32,11 +32,11 @@ class _GameOfLifeState extends State<GameOfLife> {
               ),
               row: row,
               total: total,
-              onTap: (index) => arr.contains('X')
+              onTap: (index) => arr.contains(true)
                   ? bloc.add(ClickEvent(index))
                   : bloc.add(ResetEvent()),
-              reset: (index) => () => bloc.add(ResetEvent()),
-              condition: (int index) => 'X' == arr[index],
+              reset: (index) => bloc.add(ResetEvent()),
+              condition: (int index) => arr[index],
             );
           },
         ),

@@ -1,52 +1,52 @@
 import 'dart:math';
 
 class GameOfLifeFunctions {
-  List<String> randomLife(List<String> arr) {
+  List<bool> randomLife(List<bool> arr) {
     final rng = Random();
     final total = arr.length;
     final numOfLiveCells = rng.nextInt(total);
 
     for (var i = 0; i < numOfLiveCells; i++) {
       final rando = rng.nextInt(total);
-      
-      if (arr[rando] == "") {
-        arr[rando] = "X";
+
+      if (!arr[rando]) {
+        arr[rando] = true;
       }
     }
 
     return arr;
   }
 
-  List<String> setNewValues(List<String> arr, int rows) {
+  List<bool> setNewValues(List<bool> arr, int rows) {
     int total = arr.length;
 
     for (var i = 0; i < total; i++) {
       final count = _calculateLive(i, arr, rows);
       if (count == 3) {
-        arr[i] = "X";
+        arr[i] = true;
       }
       if (count < 2 || count > 3) {
-        arr[i] = "";
+        arr[i] = false;
       }
     }
 
     return arr;
   }
 
-  List<String> onClick(int index, List<String> arr) {
-    arr[index] = "X";
+  List<bool> onClick(int index, List<bool> arr) {
+    arr[index] = true;
 
     return arr;
   }
 
-  List<String> onReset(List<String> arr) => randomLife(arr);
+  List<bool> onReset(List<bool> arr) => randomLife(arr);
 
   int _liveCells(int value, int i, List arr, int rows) {
     int total = arr.length;
 
     late final int count;
 
-    if (value >= 0 && value < total && arr[value] == "X") {
+    if (value >= 0 && value < total && arr[value]) {
       if (value % rows == 0 && value == (i - (rows - 1)) ||
           value % rows == 0 && value == (i + (rows + 1)) ||
           value % rows == 0 && value == (i + 1) ||

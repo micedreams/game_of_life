@@ -6,11 +6,11 @@ import 'package:game_of_life/game_of_life_state.dart';
 class GameOfLifeBloc extends Bloc<GameOfLifeEvent, GameOfLifeState> {
   final rows = 10;
   final function = GameOfLifeFunctions();
-  List<String> arr = List.filled(100, "", growable: false);
+  List<bool> arr = List.filled(100, false, growable: false);
 
   GameOfLifeBloc()
       : super(GameOfLifeState(
-          arr: List.filled(100, "", growable: false),
+          arr: List.filled(100, false, growable: false),
           rows: 10,
         )) {
     on<ResetEvent>((event, emit) {

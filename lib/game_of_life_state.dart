@@ -4,6 +4,6 @@ class GameOfLifeState {
     required this.rows,
   });
 
-  final List<String> arr;
+  final List<bool> arr;
   final int rows;
 }
