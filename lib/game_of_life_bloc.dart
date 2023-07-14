@@ -8,21 +8,17 @@ class GameOfLifeBloc extends Bloc<GameOfLifeEvent, GameOfLifeState> {
   final function = GameOfLifeFunctions();
   List<bool> arr = List.filled(100, false, growable: false);
 
-  GameOfLifeBloc()
-      : super(GameOfLifeState(
-          arr: List.filled(100, false, growable: false),
-          rows: 10,
-        )) {
+  GameOfLifeBloc() : super(GameOfLifeState()) {
     on<ResetEvent>((event, emit) {
-      arr = function.onReset(arr);
+      arr = function.onReset(arr, index: event.index);
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
-    on<NewStateEvent>((event, emit) {
-      arr = function.setNewValues(arr, rows);
+    on<SetEvent>((event, emit) {
+      arr = function.onSet(arr, rows);
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
     on<ClickEvent>((event, emit) {
-      arr = function.onClick(event.index, arr);
+      arr = function.onClick(arr, event.index);
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
   }

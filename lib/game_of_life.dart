@@ -21,21 +21,21 @@ class _GameOfLifeState extends State<GameOfLife> {
           builder: (context, state) {
             final bloc = BlocProvider.of<GameOfLifeBloc>(context);
 
-            final arr = state.arr;
-            final row = state.rows;
+            final arr = state.arr ?? [];
+            final row = state.rows ?? 0;
             final total = arr.length;
 
             return GameOfLifeView(
               set: Future.delayed(
                 const Duration(seconds: 1),
-                () => bloc.add(NewStateEvent()),
+                () => bloc.add(SetEvent()),
               ),
               row: row,
               total: total,
               onTap: (index) => arr.contains(true)
                   ? bloc.add(ClickEvent(index))
-                  : bloc.add(ResetEvent()),
-              reset: (index) => bloc.add(ResetEvent()),
+                  : bloc.add(ResetEvent(index: index)),
+              reset: (index) => bloc.add(ResetEvent(index: index)),
               condition: (int index) => arr[index],
             );
           },

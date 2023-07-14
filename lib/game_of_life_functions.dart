@@ -1,23 +1,7 @@
 import 'dart:math';
 
 class GameOfLifeFunctions {
-  List<bool> randomLife(List<bool> arr) {
-    final rng = Random();
-    final total = arr.length;
-    final numOfLiveCells = rng.nextInt(total);
-
-    for (var i = 0; i < numOfLiveCells; i++) {
-      final rando = rng.nextInt(total);
-
-      if (!arr[rando]) {
-        arr[rando] = true;
-      }
-    }
-
-    return arr;
-  }
-
-  List<bool> setNewValues(List<bool> arr, int rows) {
+  List<bool> onSet(List<bool> arr, int rows) {
     int total = arr.length;
 
     for (var i = 0; i < total; i++) {
@@ -33,15 +17,23 @@ class GameOfLifeFunctions {
     return arr;
   }
 
-  List<bool> onClick(int index, List<bool> arr) {
+  List<bool> onClick(List<bool> arr, int index) {
     arr[index] = true;
 
     return arr;
   }
 
-  List<bool> onReset(List<bool> arr) => randomLife(arr);
+  List<bool> onReset(List<bool> arr, {int? index}) {
+    _addLife(arr);
 
-  int _liveCells(int value, int i, List arr, int rows) {
+    if (null != index && !arr[index]) {
+      arr[index] = true;
+    }
+
+    return arr;
+  }
+
+  int _liveCells(int value, int i, List<bool> arr, int rows) {
     int total = arr.length;
 
     late final int count;
@@ -64,7 +56,7 @@ class GameOfLifeFunctions {
     return count;
   }
 
-  int _calculateLive(int i, List arr, int rows) {
+  int _calculateLive(int i, List<bool> arr, int rows) {
     int count = 0;
 
     count += _liveCells(i + (1), i, arr, rows);
@@ -77,5 +69,21 @@ class GameOfLifeFunctions {
     count += _liveCells(i - (rows), i, arr, rows);
 
     return count;
+  }
+
+  List<bool> _addLife(List<bool> arr) {
+    final rng = Random();
+    final total = arr.length;
+    final numOfLiveCells = rng.nextInt(total);
+
+    for (var i = 0; i < numOfLiveCells; i++) {
+      final rando = rng.nextInt(total);
+
+      if (!arr[rando]) {
+        arr[rando] = true;
+      }
+    }
+
+    return arr;
   }
 }
