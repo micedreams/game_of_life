@@ -12,36 +12,44 @@ class GameOfLifeView extends StatefulWidget {
 }
 
 class _GameOfLifeViewState extends State<GameOfLifeView> {
+  final row = 10;
+  final total = 100;
+  late GameOfLifeBloc bloc;
+
   @override
-  Widget build(context) {
-    final bloc = BlocProvider.of<GameOfLifeBloc>(context);
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Game of life"),
-        ),
-        body: BlocBuilder<GameOfLifeBloc, GameOfLifeState>(
-          builder: (context, state) {
-            return FutureBuilder(future: (() async {
-              await Future<void>.delayed(const Duration(seconds: 1));
-              bloc.add(NewStateEvent());
-              await Future<void>.delayed(const Duration(seconds: 1));
-            })(), builder: (context, snapshot) {
-              return GridView.count(
-                crossAxisCount: 10,
-                children: List.generate(100, (index) {
-                  return InkWell(
-                    onTap: () {
-                      return bloc.add(ClickEvent(index));
-                    },
-                    onLongPress: () {
-                      return bloc.add(ResetEvent());
-                    },
-                    child: Card(child: Center(child: Text(state.arr[index]))),
-                  );
-                }),
-              );
-            });
-          },
-        ));
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    bloc = BlocProvider.of<GameOfLifeBloc>(context);
   }
+
+  @override
+  Widget build(context) => Scaffold(
+        body: BlocBuilder<GameOfLifeBloc, GameOfLifeState>(
+          builder: (context, state) => FutureBuilder(
+            future: setValues(bloc),
+            builder: (context, snapshot) => GridView.count(
+              crossAxisCount: row,
+              children: List.generate(
+                total,
+                (index) => InkWell(
+                  onTap: () => bloc.add(ClickEvent(index)),
+                  onLongPress: () => bloc.add(ResetEvent()),
+                  child: 'X' == state.arr[index]
+                      ? const Card(
+                          color: Color.fromARGB(255, 54, 81, 24),
+                          elevation: 2.0,
+                        )
+                      : const Card(color: Color.fromARGB(255, 239, 194, 194)),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Future<void> setValues(GameOfLifeBloc bloc) async => Future.delayed(
+        const Duration(seconds: 1),
+        () => bloc.add(NewStateEvent()),
+      );
 }
