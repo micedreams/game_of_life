@@ -4,24 +4,25 @@ import 'package:game_of_life/game_of_life_functions.dart';
 import 'package:game_of_life/game_of_life_state.dart';
 
 class GameOfLifeBloc extends Bloc<GameOfLifeEvent, GameOfLifeState> {
-  GameOfLifeFunctions function = GameOfLifeFunctions();
-  var arr = List.filled(100, "", growable: false);
   final rows = 10;
+  final function = GameOfLifeFunctions();
+  List<String> arr = List.filled(100, "", growable: false);
+
   GameOfLifeBloc()
       : super(GameOfLifeState(
-            arr: List.filled(100, "", growable: false), rows: 10)) {
+          arr: List.filled(100, "", growable: false),
+          rows: 10,
+        )) {
     on<ResetEvent>((event, emit) {
-      var dispose = function.onReset();
-      arr = dispose;
+      arr = function.onReset();
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
     on<NewStateEvent>((event, emit) {
-      var newState = function.setNewValues(arr);
-      arr = newState;
+      arr = function.setNewValues(arr, rows);
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
     on<ClickEvent>((event, emit) {
-      arr = function.onClick(event.index);
+      arr = function.onClick(event.index, arr);
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
   }

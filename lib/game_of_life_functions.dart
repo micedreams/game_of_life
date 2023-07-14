@@ -1,27 +1,27 @@
 import 'dart:math';
 
 class GameOfLifeFunctions {
-  var arr = List.filled(100, "", growable: false);
-  int rows = 10;
-  int total = 100;
-  var rng = Random();
-  late int numOfLiveCells = rng.nextInt(total);
-  late int count;
+  List<String> randomLife(List<String> arr) {
+    final rng = Random();
+    final total = arr.length;
+    final numOfLiveCells = rng.nextInt(total);
 
-  randomLife() {
     for (var i = 0; i < numOfLiveCells; i++) {
-      var rando = rng.nextInt(total);
+      final rando = rng.nextInt(total);
+      
       if (arr[rando] == "") {
         arr[rando] = "X";
       }
     }
+
     return arr;
   }
 
-  setNewValues(arr) {
+  List<String> setNewValues(List<String> arr, int rows) {
     int total = arr.length;
+
     for (var i = 0; i < total; i++) {
-      count = _calculateLive(i, arr);
+      final count = _calculateLive(i, arr, rows);
       if (count == 3) {
         arr[i] = "X";
       }
@@ -29,23 +29,23 @@ class GameOfLifeFunctions {
         arr[i] = "";
       }
     }
+
     return arr;
   }
 
-  onClick(index) {
+  List<String> onClick(int index, List<String> arr) {
     arr[index] = "X";
+
     return arr;
   }
 
-  onReset() {
-    arr = List.filled(100, "", growable: false);
-    arr = randomLife();
-    return arr;
-  }
+  List<String> onReset() => randomLife(List.filled(100, "", growable: false));
 
-  _liveCells(value, i, arr) {
-    int rows = sqrt(arr.length).toInt();
+  int _liveCells(int value, int i, List arr, int rows) {
     int total = arr.length;
+
+    late final int count;
+
     if (value >= 0 && value < total && arr[value] == "X") {
       if (value % rows == 0 && value == (i - (rows - 1)) ||
           value % rows == 0 && value == (i + (rows + 1)) ||
@@ -60,20 +60,22 @@ class GameOfLifeFunctions {
     } else {
       count = 0;
     }
+
     return count;
   }
 
-  _calculateLive(i, arr) {
-    int rows = sqrt(arr.length).toInt();
-    num? count = 0;
-    count += _liveCells(i + (1), i, arr);
-    count += _liveCells(i + (rows + 1), i, arr);
-    count += _liveCells(i + (rows - 1), i, arr);
-    count += _liveCells(i + (rows), i, arr);
-    count += _liveCells(i - (1), i, arr);
-    count += _liveCells(i - (rows + 1), i, arr);
-    count += _liveCells(i - (rows - 1), i, arr);
-    count += _liveCells(i - (rows), i, arr);
+  int _calculateLive(int i, List arr, int rows) {
+    int count = 0;
+
+    count += _liveCells(i + (1), i, arr, rows);
+    count += _liveCells(i + (rows + 1), i, arr, rows);
+    count += _liveCells(i + (rows - 1), i, arr, rows);
+    count += _liveCells(i + (rows), i, arr, rows);
+    count += _liveCells(i - (1), i, arr, rows);
+    count += _liveCells(i - (rows + 1), i, arr, rows);
+    count += _liveCells(i - (rows - 1), i, arr, rows);
+    count += _liveCells(i - (rows), i, arr, rows);
+
     return count;
   }
 }
