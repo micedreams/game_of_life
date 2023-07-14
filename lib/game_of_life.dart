@@ -1,48 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:game_of_life/game_of_life_functions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_of_life/game_of_life_bloc.dart';
+import 'package:game_of_life/game_of_life_event.dart';
+import 'package:game_of_life/game_of_life_state.dart';
 
 class GameOfLife extends StatefulWidget {
+  const GameOfLife({super.key});
+
   @override
   State<StatefulWidget> createState() => _GameOfLifeState();
 }
 
 class _GameOfLifeState extends State<GameOfLife> {
-  GameOfLifeFunctions world = GameOfLifeFunctions();
-  var arr = List.filled(100, "", growable: false);
+  late GameOfLifeBloc bloc;
 
   @override
-  initState() {
-    arr = world.randomLife();
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    bloc = BlocProvider.of<GameOfLifeBloc>(context);
   }
 
   @override
-  Widget build(context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Game of life"),
-        ),
-        body: FutureBuilder(future: (() async {
-          await Future<void>.delayed(const Duration(seconds: 1));
-          setState(() {
-            arr = world.setNewValues(arr);
-          });
-          await Future<void>.delayed(const Duration(seconds: 1));
-        })(), builder: (context, snapshot) {
-          return GridView.count(
-            crossAxisCount: 10,
-            children: List.generate(100, (index) {
-              return InkWell(
-                onTap: () => setState(() {
-                  arr = world.onClick(index);
-                }),
-                onLongPress: () => setState(() {
-                  arr = world.onReset();
-                }),
-                child: Card(child: Center(child: Text(arr[index]))),
-              );
-            }),
+  Widget build(context) => BlocBuilder<GameOfLifeBloc, GameOfLifeState>(
+        builder: (context, state) {
+          final arr = state.arr;
+          final total = arr.length;
+          final row = (total * 0.1).floor();
+
+          return FutureBuilder(
+            future: setValues(bloc),
+            builder: (context, snapshot) => Scaffold(
+              body: GridView.count(
+                crossAxisCount: row,
+                children: List.generate(
+                  total,
+                  (index) => InkWell(
+                    onTap: () => bloc.add(ClickEvent(index)),
+                    onLongPress: () => bloc.add(ResetEvent()),
+                    child: 'X' == arr[index]
+                        ? const Card(
+                            color: Color.fromARGB(255, 54, 81, 24),
+                            elevation: 2.0,
+                          )
+                        : const Card(color: Color.fromARGB(255, 239, 194, 194)),
+                  ),
+                ),
+              ),
+            ),
           );
-        }));
-  }
+        },
+      );
+
+  Future<void> setValues(GameOfLifeBloc bloc) async => Future.delayed(
+        const Duration(seconds: 1),
+        () => bloc.add(NewStateEvent()),
+      );
 }
