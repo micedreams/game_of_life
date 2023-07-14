@@ -39,7 +39,7 @@ class GameOfLifeFunctions {
     return arr;
   }
 
-  List<String> onReset() => randomLife(List.filled(100, "", growable: false));
+  List<String> onReset(List<String> arr) => randomLife(arr);
 
   int _liveCells(int value, int i, List arr, int rows) {
     int total = arr.length;

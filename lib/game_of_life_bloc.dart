@@ -14,7 +14,7 @@ class GameOfLifeBloc extends Bloc<GameOfLifeEvent, GameOfLifeState> {
           rows: 10,
         )) {
     on<ResetEvent>((event, emit) {
-      arr = function.onReset();
+      arr = function.onReset(arr);
       emit(GameOfLifeState(arr: arr, rows: rows));
     });
     on<NewStateEvent>((event, emit) {
