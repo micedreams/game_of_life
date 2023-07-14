@@ -33,8 +33,8 @@ class GameOfLifeView extends StatelessWidget {
                 onLongPress: () => reset(index),
                 child: Card(
                   color: condition(index)
-                      ? const Color.fromARGB(255, 54, 81, 24)
-                      : const Color.fromARGB(255, 239, 194, 194),
+                      ? const Color.fromARGB(154, 54, 81, 24)
+                      : const Color.fromARGB(146, 135, 98, 111),
                 ),
               );
             },

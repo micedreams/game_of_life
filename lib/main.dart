@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'game_of_life.dart';
 
-
 void main() async {
   runApp(const GOL());
 }
@@ -12,10 +11,13 @@ class GOL extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       title: "Game of life",
       debugShowCheckedModeBanner: false,
-      home: GameOfLife(),
+      home: const GameOfLife(),
     );
   }
 }
