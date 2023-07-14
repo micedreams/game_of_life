@@ -1,4 +1,9 @@
 class GameOfLifeState {
+  GameOfLifeState({
+    required this.arr,
+    required this.rows,
+  });
+
   final arr;
-  GameOfLifeState({this.arr});
+  final rows;
 }

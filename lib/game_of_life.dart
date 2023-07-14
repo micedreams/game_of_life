@@ -22,8 +22,8 @@ class _GameOfLifeState extends State<GameOfLife> {
             final bloc = BlocProvider.of<GameOfLifeBloc>(context);
 
             final arr = state.arr;
+            final row = state.rows;
             final total = arr.length;
-            final row = (total * 0.1).floor();
 
             return GameOfLifeView(
               set: Future.delayed(
@@ -42,4 +42,3 @@ class _GameOfLifeState extends State<GameOfLife> {
         ),
       );
 }
-
